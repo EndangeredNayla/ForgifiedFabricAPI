@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -50,7 +51,7 @@ class FluidVariantTests extends AbstractTransferApiTest {
 
 		FluidVariant newVariant = variant.withComponentChanges(DataComponentPatch.builder()
 				.remove(DataComponents.HIDE_TOOLTIP)
-				.set(DataComponentTypes.GLIDER, Unit.INSTANCE)
+				.set(DataComponents.CUSTOM_NAME, Component.literal("Test"))
 				.build());
 
 		Assertions.assertFalse(
@@ -59,7 +60,7 @@ class FluidVariantTests extends AbstractTransferApiTest {
 		);
 
 		Assertions.assertTrue(
-				newVariant.getComponentMap().has(DataComponentTypes.GLIDER),
+				newVariant.getComponentMap().has(DataComponents.CUSTOM_NAME),
 				"New variant's GLIDER component was added, but is not present"
 		);
 	}
