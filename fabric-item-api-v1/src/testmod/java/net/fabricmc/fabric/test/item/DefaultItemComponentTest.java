@@ -49,6 +49,14 @@ public class DefaultItemComponentTest implements ModInitializer {
 				// Remove the food component from beef
 				builder.set(DataComponents.FOOD, null);
 			});
+			// add a word to the start of diamond pickaxe name
+			context.modify(Items.DIAMOND_PICKAXE, builder -> {
+				Component baseName = builder.getOrCreate(
+						DataComponents.ITEM_NAME,
+						Items.DIAMOND_PICKAXE::getName
+				);
+				builder.set(DataComponents.ITEM_NAME, prependModifiedLiteral(baseName));
+			});
 		});
 
 		// Make all fireworks glint
@@ -57,5 +65,10 @@ public class DefaultItemComponentTest implements ModInitializer {
 				builder.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 			});
 		});
+	}
+
+	public static Component prependModifiedLiteral(Component name) {
+		return Component.literal("Modified ")
+				.append(name);
 	}
 }

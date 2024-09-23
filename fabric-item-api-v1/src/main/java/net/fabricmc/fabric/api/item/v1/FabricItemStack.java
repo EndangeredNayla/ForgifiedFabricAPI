@@ -23,7 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.common.extensions.IItemStackExtension;
 
-/*
+/**
  * Fabric-provided extensions for {@link ItemStack}.
  * This interface is automatically implemented on all item stacks via Mixin and interface injection.
  */

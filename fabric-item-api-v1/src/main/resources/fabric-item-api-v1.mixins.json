@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AnvilScreenHandlerMixin",
+    "ComponentMapBuilderMixin",
+    "EnchantmentBuilderAccessor",
     "EnchantCommandMixin",
     "EnchantmentHelperMixin",
     "EnchantRandomlyLootFunctionMixin",
@@ -12,7 +14,8 @@
     "ItemMixin",
     "ItemSettingsMixin",
     "ItemStackMixin",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "RegistryLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1
