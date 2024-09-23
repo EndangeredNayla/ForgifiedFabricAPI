@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
@@ -91,6 +92,11 @@ public class FluidVariantImpl implements FluidVariant {
 	@Override
 	public DataComponentMap getComponentMap() {
 		return componentMap;
+	}
+
+	@Override
+	public FluidVariant withComponentChanges(DataComponentPatch changes) {
+		return of(fluid, TransferApiImpl.mergeChanges(getComponents(), changes));
 	}
 
 	@Override

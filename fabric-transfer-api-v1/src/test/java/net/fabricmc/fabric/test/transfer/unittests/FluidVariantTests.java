@@ -18,11 +18,15 @@ package net.fabricmc.fabric.test.transfer.unittests;
 
 import static net.fabricmc.fabric.test.transfer.TestUtil.assertEquals;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.util.Unit;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 
 class FluidVariantTests extends AbstractTransferApiTest {
 	@BeforeAll
@@ -36,6 +40,28 @@ class FluidVariantTests extends AbstractTransferApiTest {
 		assertFluidEquals(Fluids.LAVA, FluidVariant.of(Fluids.LAVA), FluidVariant.of(Fluids.FLOWING_LAVA));
 		assertEquals(FluidVariant.of(Fluids.WATER), FluidVariant.of(Fluids.FLOWING_WATER));
 		assertEquals(FluidVariant.of(Fluids.LAVA), FluidVariant.of(Fluids.FLOWING_LAVA));
+	}
+
+	@Test
+	public void testWithComponentChanges() {
+		FluidVariant variant = FluidVariant.of(Fluids.WATER, DataComponentPatch.builder()
+				.set(DataComponents.HIDE_TOOLTIP, Unit.INSTANCE)
+				.build());
+
+		FluidVariant newVariant = variant.withComponentChanges(DataComponentPatch.builder()
+				.remove(DataComponents.HIDE_TOOLTIP)
+				.set(DataComponentTypes.GLIDER, Unit.INSTANCE)
+				.build());
+
+		Assertions.assertFalse(
+				newVariant.getComponentMap().has(DataComponents.HIDE_TOOLTIP),
+				"New variant's HIDE_TOOLTIP component was removed, but is still present"
+		);
+
+		Assertions.assertTrue(
+				newVariant.getComponentMap().has(DataComponentTypes.GLIDER),
+				"New variant's GLIDER component was added, but is not present"
+		);
 	}
 
 	private static void assertFluidEquals(Fluid fluid, FluidVariant... variants) {

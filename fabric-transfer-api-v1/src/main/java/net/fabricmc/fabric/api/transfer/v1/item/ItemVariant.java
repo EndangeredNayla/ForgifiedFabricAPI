@@ -104,4 +104,14 @@ public interface ItemVariant extends TransferVariant<Item> {
 		if (isBlank()) return ItemStack.EMPTY;
 		return new ItemStack(getRegistryEntry(), count, getComponents());
 	}
+
+	/**
+	 * Creates a copy of this ItemVariant with the provided component changes applied.
+	 * @param changes the changes to apply
+	 * @return the new variant with the changes applied
+	 *
+	 * @see ItemStack#applyComponents(DataComponentPatch)
+	 */
+	@Override
+	ItemVariant withComponentChanges(DataComponentPatch changes);
 }
