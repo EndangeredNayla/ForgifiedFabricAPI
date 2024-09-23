@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworkin
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientConfigurationPacketListenerImpl;
 import net.minecraft.network.ConnectionProtocol;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -82,6 +83,11 @@ public class NeoClientConfigurationNetworking {
         @Override
         public Minecraft client() {
             return Minecraft.getInstance();
+        }
+
+        @Override
+        public ClientConfigurationPacketListenerImpl networkHandler() {
+            return (ClientConfigurationPacketListenerImpl) configurationPacketListener;
         }
 
         @Override
