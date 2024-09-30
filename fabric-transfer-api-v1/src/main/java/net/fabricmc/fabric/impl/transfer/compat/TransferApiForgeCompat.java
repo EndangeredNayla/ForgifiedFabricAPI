@@ -16,21 +16,9 @@
 
 package net.fabricmc.fabric.impl.transfer.compat;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -40,8 +28,19 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.SlottedStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 public class TransferApiForgeCompat {
 	public static void init() {
@@ -50,21 +49,6 @@ public class TransferApiForgeCompat {
 	}
 
 	private static final Map<Storage<?>, LazyOptional<?>> CAPS = new HashMap<>();
-
-	/**
-	 * This lock has two purposes: avoiding recursive calls between {@link ICapabilityProvider#getCapability(Capability) getCapability}
-	 * and {@link BlockApiLookup#find(World, BlockPos, BlockState, BlockEntity, Object) find} as well as influencing the
-	 * behavior of {@code find} if it was called from {@code getCapability}.
-	 * <p>
-	 * The recursive calls occur because our capabilities providers need to access the block lookup API to check if they
-	 * should provide a capability (for Fabric from Forge compat), but the block lookup API needs to query the
-	 * capabilities (for Forge from Fabric compat). This lock is set immediately before one API calls the other, which
-	 * then disables the call from the other API to the first, breaking the recursion.
-	 * <p>
-	 * Additionally, this lock is used to conditionally disable some of the block lookup API's fallback providers, if
-	 * they got invoked by a capability provider. This is needed because Fabric has fallback providers for many Vanilla
-	 * things, but Forge already implements their own compat for those.
-	 */
 	public static final ThreadLocal<Boolean> COMPUTING_CAPABILITY_LOCK = ThreadLocal.withInitial(() -> false);
 
 	private static void onAttachBlockEntityCapabilities(AttachCapabilitiesEvent<BlockEntity> event) {
