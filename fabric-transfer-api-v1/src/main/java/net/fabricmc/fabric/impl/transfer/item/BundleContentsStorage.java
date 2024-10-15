@@ -63,7 +63,7 @@ public class BundleContentsStorage implements Storage<ItemVariant> {
 
 		ItemStack stack = resource.toStack((int) maxAmount);
 
-		if (!BundleContents.canBeBundled(stack)) return 0;
+		if (!stack.isEmpty() || !stack.getItem().canFitInsideContainerItems()) return 0;
 
 		var builder = new BundleContents.Mutable(bundleContents());
 
