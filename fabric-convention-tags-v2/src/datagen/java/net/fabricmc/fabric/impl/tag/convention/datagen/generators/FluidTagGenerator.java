@@ -36,6 +36,13 @@ public final class FluidTagGenerator extends FabricTagProvider.FluidTagProvider 
 				.addOptionalTag(FluidTags.LAVA);
 		tag(ConventionalFluidTags.MILK);
 		tag(ConventionalFluidTags.HONEY);
+		tag(ConventionalFluidTags.GASEOUS);
+		tag(ConventionalFluidTags.EXPERIENCE);
+		tag(ConventionalFluidTags.POTION);
+		tag(ConventionalFluidTags.SUSPICIOUS_STEW);
+		tag(ConventionalFluidTags.MUSHROOM_STEW);
+		tag(ConventionalFluidTags.RABBIT_STEW);
+		tag(ConventionalFluidTags.BEETROOT_SOUP);
 		tag(ConventionalFluidTags.HIDDEN_FROM_RECIPE_VIEWERS);
 	}
 }
