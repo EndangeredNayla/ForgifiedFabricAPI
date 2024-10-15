@@ -114,6 +114,8 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		generateStorageTags();
 
+		generateLogTags();
+
 		generateHeadTags();
 
 		generateMiscTags();
@@ -493,6 +495,29 @@ public final class BlockTagGenerator extends FabricTagProvider.BlockTagProvider 
 
 		tag(ConventionalBlockTags.STORAGE_BLOCKS_WHEAT)
 				.add(Blocks.HAY_BLOCK);
+	}
+
+	private void generateLogTags() {
+		tag(ConventionalBlockTags.STRIPPED_LOGS)
+				.add(Blocks.STRIPPED_ACACIA_LOG)
+				.add(Blocks.STRIPPED_BAMBOO_BLOCK)
+				.add(Blocks.STRIPPED_BIRCH_LOG)
+				.add(Blocks.STRIPPED_CHERRY_LOG)
+				.add(Blocks.STRIPPED_DARK_OAK_LOG)
+				.add(Blocks.STRIPPED_JUNGLE_LOG)
+				.add(Blocks.STRIPPED_MANGROVE_LOG)
+				.add(Blocks.STRIPPED_OAK_LOG)
+				.add(Blocks.STRIPPED_SPRUCE_LOG);
+
+		tag(ConventionalBlockTags.STRIPPED_WOODS)
+				.add(Blocks.STRIPPED_ACACIA_WOOD)
+				.add(Blocks.STRIPPED_BIRCH_WOOD)
+				.add(Blocks.STRIPPED_CHERRY_WOOD)
+				.add(Blocks.STRIPPED_DARK_OAK_WOOD)
+				.add(Blocks.STRIPPED_JUNGLE_WOOD)
+				.add(Blocks.STRIPPED_MANGROVE_WOOD)
+				.add(Blocks.STRIPPED_OAK_WOOD)
+				.add(Blocks.STRIPPED_SPRUCE_WOOD);
 	}
 
 	private void generateHeadTags() {
