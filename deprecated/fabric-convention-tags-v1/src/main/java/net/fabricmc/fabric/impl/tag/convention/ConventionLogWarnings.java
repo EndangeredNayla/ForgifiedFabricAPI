@@ -213,6 +213,8 @@ public class ConventionLogWarnings implements ModInitializer {
 			createMapEntry(Registries.ITEM, "stews", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.SOUP_FOODS),
 			createMapEntry(Registries.ITEM, "candy", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDY_FOODS),
 			createMapEntry(Registries.ITEM, "candies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.CANDY_FOODS),
+			createMapEntry(Registries.ITEM, "pie", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.PIE_FOODS),
+			createMapEntry(Registries.ITEM, "pies", net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.PIE_FOODS),
 			createMapEntry(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("minecraft", "music_discs")), net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags.MUSIC_DISCS)
 	);
 

@@ -282,6 +282,9 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 		tag(ConventionalItemTags.CANDY_FOODS)
 				.addOptionalTag(ConventionalItemTags.CANDIES_FOODS);
 
+		tag(ConventionalItemTags.PIE_FOODS)
+				.add(Items.PUMPKIN_PIE);
+
 		tag(ConventionalItemTags.GOLDEN_FOODS)
 				.add(Items.GOLDEN_APPLE)
 				.add(Items.ENCHANTED_GOLDEN_APPLE)
@@ -340,6 +343,7 @@ public final class ItemTagGenerator extends FabricTagProvider.ItemTagProvider {
 				.addOptionalTag(ConventionalItemTags.COOKED_FISH_FOODS)
 				.addOptionalTag(ConventionalItemTags.SOUP_FOODS)
 				.addOptionalTag(ConventionalItemTags.CANDY_FOODS)
+				.addOptionalTag(ConventionalItemTags.PIE_FOODS)
 				.addOptionalTag(ConventionalItemTags.GOLDEN_FOODS)
 				.addOptionalTag(ConventionalItemTags.EDIBLE_WHEN_PLACED_FOODS)
 				.addOptionalTag(ConventionalItemTags.FOOD_POISONING_FOODS);
