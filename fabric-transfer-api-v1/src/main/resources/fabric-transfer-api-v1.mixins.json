@@ -6,7 +6,8 @@
     "AbstractFurnaceBlockEntityMixin",
 
     "BucketItemMixin",
-
+    "BundleContentsComponentAccessor",
+    "ContainerComponentAccessor",
     "DoubleInventoryAccessor",
 
     "FluidMixin",

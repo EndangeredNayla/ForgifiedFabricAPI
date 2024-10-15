@@ -16,13 +16,23 @@
 
 package net.fabricmc.fabric.test.transfer.ingame;
 
+import com.mojang.brigadier.arguments.LongArgumentType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -56,6 +66,74 @@ public class TransferTestInitializer implements ModInitializer {
 		ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> TrashingStorage.ITEM, Blocks.OBSIDIAN);
 		// And diamond ore blocks are an infinite source of diamonds! Yay!
 		ItemStorage.SIDED.registerForBlocks((world, pos, state, be, direction) -> CreativeStorage.DIAMONDS, Blocks.DIAMOND_ORE);
+
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			dispatcher.register(
+					Commands.literal("fabric_insertintoheldstack")
+							.then(Commands.argument("stack", ItemArgument.item(registryAccess))
+									.then(Commands.argument("count", LongArgumentType.longArg(1))
+											.executes(context -> {
+												ItemVariant variant = ItemVariant.of(ItemArgument.getItem(context, "stack")
+														.createItemStack(1, false));
+
+												ContainerItemContext containerCtx = ContainerItemContext.ofPlayerHand(context.getSource().getPlayerOrException(), InteractionHand.MAIN_HAND);
+												Storage<ItemVariant> storage = containerCtx.find(ItemStorage.ITEM);
+
+												if (storage == null) {
+													context.getSource().sendSystemMessage(Component.literal("no storage found"));
+													return 0;
+												}
+
+												long inserted;
+
+												try (Transaction tx = Transaction.openOuter()) {
+													inserted = storage.insert(
+															variant,
+															LongArgumentType.getLong(context, "count"),
+															tx
+													);
+													tx.commit();
+												}
+
+												context.getSource().sendSystemMessage(Component.literal("inserted " + inserted + " items"));
+
+												return (int) inserted;
+											})))
+			);
+
+			dispatcher.register(
+					Commands.literal("fabric_extractfromheldstack")
+							.then(Commands.argument("stack", ItemArgument.item(registryAccess))
+									.then(Commands.argument("count", LongArgumentType.longArg(1))
+											.executes(context -> {
+												ItemVariant variant = ItemVariant.of(ItemArgument.getItem(context, "stack")
+														.createItemStack(1, false));
+
+												ContainerItemContext containerCtx = ContainerItemContext.ofPlayerHand(context.getSource().getPlayerOrException(), InteractionHand.MAIN_HAND);
+												Storage<ItemVariant> storage = containerCtx.find(ItemStorage.ITEM);
+
+												if (storage == null) {
+													context.getSource().sendSystemMessage(Component.literal("no storage found"));
+													return 0;
+												}
+
+												long extracted;
+
+												try (Transaction tx = Transaction.openOuter()) {
+													extracted = storage.extract(
+															variant,
+															LongArgumentType.getLong(context, "count"),
+															tx
+													);
+													tx.commit();
+												}
+
+												context.getSource().sendSystemMessage(Component.literal("extracted " + extracted + " items"));
+
+												return (int) extracted;
+											})))
+			);
+		});
 	}
 
 	private static void registerBlock(Block block, String name) {
