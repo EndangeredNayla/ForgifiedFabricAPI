@@ -37,6 +37,17 @@ public final class ServerChunkEvents {
 	});
 
 	/**
+	 * Called when a newly generated chunk is loaded into a ServerWorld.
+	 *
+	 * <p>When this event is called, the chunk is already in the world.
+	 */
+	public static final Event<ServerChunkEvents.Generate> CHUNK_GENERATE = EventFactory.createArrayBacked(ServerChunkEvents.Generate.class, callbacks -> (serverWorld, chunk) -> {
+		for (Generate callback : callbacks) {
+			callback.onChunkGenerate(serverWorld, chunk);
+		}
+	});
+
+	/**
 	 * Called when a chunk is unloaded from a ServerWorld.
 	 *
 	 * <p>When this event is called, the chunk is still present in the world.
@@ -50,6 +61,11 @@ public final class ServerChunkEvents {
 	@FunctionalInterface
 	public interface Load {
 		void onChunkLoad(ServerLevel world, LevelChunk chunk);
+	}
+
+	@FunctionalInterface
+	public interface Generate {
+		void onChunkGenerate(ServerLevel world, LevelChunk chunk);
 	}
 
 	@FunctionalInterface

@@ -74,6 +74,9 @@ public final class LifecycleEventsImpl implements ModInitializer {
         NeoForge.EVENT_BUS.addListener(ChunkEvent.Load.class, ev -> {
             if (ev.getLevel() instanceof ServerLevel sw && ev.getChunk() instanceof LevelChunk wc) {
                 ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(sw, wc);
+                if (ev.isNewChunk()) {
+                    ServerChunkEvents.CHUNK_GENERATE.invoker().onChunkGenerate(sw, wc);
+                }
             }
         });
         NeoForge.EVENT_BUS.addListener(ChunkEvent.Unload.class, ev -> {
