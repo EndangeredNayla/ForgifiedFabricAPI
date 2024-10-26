@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.attachment.v1;
 
-import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
@@ -28,17 +28,33 @@ import net.minecraft.resources.ResourceLocation;
  * Class used to create and register {@link AttachmentType}s. To quickly create {@link AttachmentType}s, use one of the various
  * {@code createXXX} methods:
  * <ul>
+ * 	   <li>{@link #create(ResourceLocation, Consumer)}: attachments can be further configured by the supplied consumer.</li>
  *     <li>{@link #create(ResourceLocation)}: attachments will be neither persistent nor auto-initialized.</li>
  *     <li>{@link #createDefaulted(ResourceLocation, Supplier)}: attachments will be auto-initialized, but not persistent.</li>
  *     <li>{@link #createPersistent(ResourceLocation, Codec)}: attachments will be persistent, but not auto-initialized.</li>
  * </ul>
  *
- * <p>For finer control over the attachment type and its properties, use {@link AttachmentRegistry#builder()} to
- * get a {@link Builder} instance.</p>
+ * <p>For finer control over the attachment type and its properties, use {@link #create(ResourceLocation, Consumer)} to
+ * get and configure a {@link Builder} instance.</p>
  */
 @ApiStatus.Experimental
 public final class AttachmentRegistry {
 	private AttachmentRegistry() {
+	}
+
+	/**
+	 * Creates <i>and registers</i> an attachment, configuring the builder used underneath.
+	 *
+	 * @param id  the identifier of this attachment
+	 * @param <A> the type of attached data
+	 * @return the registered {@link AttachmentType} instance
+	 */
+	public static <A> AttachmentType<A> create(ResourceLocation id, Consumer<Builder<A>> consumer) {
+		AttachmentRegistry.Builder<A> builder = AttachmentRegistryImpl.builder();
+
+		consumer.accept(builder);
+
+		return builder.buildAndRegister(id);
 	}
 
 	/**
@@ -49,9 +65,7 @@ public final class AttachmentRegistry {
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> create(ResourceLocation id) {
-		Objects.requireNonNull(id, "identifier cannot be null");
-
-		return AttachmentRegistry.<A>builder().buildAndRegister(id);
+		return create(id, builder -> { });
 	}
 
 	/**
@@ -64,12 +78,7 @@ public final class AttachmentRegistry {
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> createDefaulted(ResourceLocation id, Supplier<A> initializer) {
-		Objects.requireNonNull(id, "identifier cannot be null");
-		Objects.requireNonNull(initializer, "initializer cannot be null");
-
-		return AttachmentRegistry.<A>builder()
-				.initializer(initializer)
-				.buildAndRegister(id);
+		return create(id, builder -> builder.initializer(initializer));
 	}
 
 	/**
@@ -81,18 +90,17 @@ public final class AttachmentRegistry {
 	 * @return the registered {@link AttachmentType} instance
 	 */
 	public static <A> AttachmentType<A> createPersistent(ResourceLocation id, Codec<A> codec) {
-		Objects.requireNonNull(id, "identifier cannot be null");
-		Objects.requireNonNull(codec, "codec cannot be null");
-
-		return AttachmentRegistry.<A>builder().persistent(codec).buildAndRegister(id);
+		return create(id, builder -> builder.persistent(codec));
 	}
 
 	/**
-	 * Creates a {@link Builder}, that gives finer control over the attachment's properties.
+	 * Creates a {@link Builder}, that gives finer control over the attachment's properties. Calling this method
+	 * directly is not recommended, as it requires explicit type parameters. {@link #create} should be used instead.
 	 *
 	 * @param <A> the type of the attached data
 	 * @return a {@link Builder} instance
 	 */
+	@Deprecated
 	public static <A> Builder<A> builder() {
 		return AttachmentRegistryImpl.builder();
 	}
