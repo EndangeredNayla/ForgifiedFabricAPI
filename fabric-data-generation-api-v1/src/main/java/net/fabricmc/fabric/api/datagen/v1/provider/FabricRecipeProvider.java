@@ -102,12 +102,12 @@ public abstract class FabricRecipeProvider extends RecipeProvider {
 				ResourceCondition[] conditions = FabricDataGenHelper.consumeConditions(recipe);
 				FabricDataGenHelper.addConditions(recipeJson, conditions);
 
-				list.add(DataProvider.saveStable(writer, recipeJson, recipePathProvider.resolveJson(identifier)));
+				list.add(DataProvider.saveStable(writer, recipeJson, recipePathProvider.json(identifier)));
 
 				if (advancement != null) {
 					JsonObject advancementJson = Advancement.CODEC.encodeStart(registryOps, advancement.value()).getOrThrow(IllegalStateException::new).getAsJsonObject();
 					FabricDataGenHelper.addConditions(advancementJson, conditions);
-					list.add(DataProvider.saveStable(writer, advancementJson, advancementPathProvider.resolveJson(getRecipeIdentifier(advancement.id()))));
+					list.add(DataProvider.saveStable(writer, advancementJson, advancementPathProvider.json(getRecipeIdentifier(advancement.id()))));
 				}
 			}
 
