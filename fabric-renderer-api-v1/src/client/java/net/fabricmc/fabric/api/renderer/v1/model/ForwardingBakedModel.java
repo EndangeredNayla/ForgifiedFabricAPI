@@ -119,7 +119,13 @@ public abstract class ForwardingBakedModel implements BakedModel, WrapperBakedMo
 
 	@Override
 	public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
-		return wrapped.applyTransform(transformType, poseStack, applyLeftHandTransform);
+		BakedModel result = wrapped.applyTransform(transformType, poseStack, applyLeftHandTransform);
+
+		if (result == wrapped) {
+		    return this;
+		}
+
+		return result;
 	}
 
 	@Override
