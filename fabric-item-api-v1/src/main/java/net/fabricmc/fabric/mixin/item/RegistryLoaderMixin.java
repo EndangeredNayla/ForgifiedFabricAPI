@@ -31,34 +31,43 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.enchantment.Enchantment;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RegistryDataLoader.class)
 abstract class RegistryLoaderMixin {
-	@WrapOperation(
-			method = "loadElementFromResource",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/core/WritableRegistry;register(Lnet/minecraft/resources/ResourceKey;Ljava/lang/Object;Lnet/minecraft/core/RegistrationInfo;)Lnet/minecraft/core/Holder$Reference;"
-			)
-	)
-	@SuppressWarnings("unchecked")
-	private static <T> Holder.Reference<T> enchantmentKey(
-			WritableRegistry<T> instance,
-			ResourceKey<T> objectKey,
-			Object object,
-			RegistrationInfo registryEntryInfo,
-			Operation<Holder.Reference<T>> original,
-			WritableRegistry<T> registry,
-			Decoder<T> decoder,
-			RegistryOps<JsonElement> ops,
-			ResourceKey<T> registryKey,
-			Resource resource,
-			RegistrationInfo entryInfo
-	) {
-		if (object instanceof Enchantment enchantment) {
-			object = EnchantmentUtil.modify((ResourceKey<Enchantment>) objectKey, enchantment, EnchantmentUtil.determineSource(resource));
-		}
+    private static Resource _fabricCapturedResource;
 
-		return original.call(instance, registryKey, object, registryEntryInfo);
-	}
+    @Inject(
+            method = "loadElementFromResource",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/util/Optional;ifPresentOrElse(Ljava/util/function/Consumer;Ljava/lang/Runnable;)V"
+            )
+    )
+    private static <E> void captureArgs(WritableRegistry<E> arg, Decoder<E> decoder2, RegistryOps<JsonElement> arg2, ResourceKey<E> arg3, Resource arg4, RegistrationInfo arg5, CallbackInfo ci) {
+        _fabricCapturedResource = arg4;
+    }
+
+    @WrapOperation(
+            method = "lambda$loadElementFromResource$13",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/core/WritableRegistry;register(Lnet/minecraft/resources/ResourceKey;Ljava/lang/Object;Lnet/minecraft/core/RegistrationInfo;)Lnet/minecraft/core/Holder$Reference;"
+            )
+    )
+    @SuppressWarnings("unchecked")
+    private static <T> Holder.Reference<T> enchantmentKey(
+            WritableRegistry<T> instance,
+            ResourceKey<T> objectKey,
+            Object object,
+            RegistrationInfo registryEntryInfo,
+            Operation<Holder.Reference<T>> original
+    ) {
+        if (object instanceof Enchantment enchantment) {
+            object = EnchantmentUtil.modify((ResourceKey<Enchantment>) objectKey, enchantment, EnchantmentUtil.determineSource(_fabricCapturedResource));
+        }
+
+        return original.call(instance, objectKey, object, registryEntryInfo);
+    }
 }
