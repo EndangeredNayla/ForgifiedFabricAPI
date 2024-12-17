@@ -165,7 +165,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	}
 
 	public static List<PreparableReloadListener> sort(PackType type, List<PreparableReloadListener> listeners) {
-		if (type == null) {
+		if (type != PackType.SERVER_DATA && type != PackType.CLIENT_RESOURCES) {
 			return listeners;
 		}
 
