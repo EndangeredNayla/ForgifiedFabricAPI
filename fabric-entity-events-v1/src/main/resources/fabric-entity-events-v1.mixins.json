@@ -11,7 +11,7 @@
     "ServerPlayerEntityMixin",
     "elytra.LivingEntityMixin",
     "elytra.PlayerEntityMixin",
-    "IItemExtensionMixin"
+    "IItemStackExtensionMixin"
   ],
   "injectors": {
     "defaultRequire": 1,
