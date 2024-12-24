@@ -43,6 +43,11 @@ public final class FabricDataGenHelper {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FabricDataGenHelper.class);
 
 	/**
+	 * When enabled the dedicated server startup will be hijacked to run the data generators and then quit.
+	 */
+	public static final boolean ENABLED = System.getProperty("fabric-api.datagen") != null;
+
+	/**
 	 * When enabled providers can enable extra validation, such as ensuring all registry entries have data generated for them.
 	 */
 	private static final boolean STRICT_VALIDATION = System.getProperty("fabric-api.datagen.strict-validation") != null;
